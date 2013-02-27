@@ -33,3 +33,8 @@ max' (x:xs) = max x (max' xs)
 max'' xs =
     case xs of [x] -> x
                (x:xs) -> max x (max'' xs)
+               
+data Vector = Vector3 Float Float Float deriving Show
+(<+>) (Vector3 x1 y1 z1) (Vector3 x2 y2 z2) = (Vector3 (x1+x2) (y1+y2) (z1+z2))
+dot (Vector3 x1 y1 z1) (Vector3 x2 y2 z2) = x1*x2 + y1*y2 + z1*z2
+norm vec = sqrt (vec `dot` vec)
