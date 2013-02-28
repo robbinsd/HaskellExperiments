@@ -34,6 +34,32 @@ max'' xs =
     case xs of [x] -> x
                (x:xs) -> max x (max'' xs)
                
+zeros n = take n (cycle [0])
+ones n = take n (cycle [1])
+smult scalar vector = [scalar * val | val <- vector]
+
+data Matrix = MatFromArr [Float] (Int,Int) deriving Show
+
+makeMatFromArr arr size@(m,n)
+    | length arr == m*n = MatFromArr arr size
+    {-| otherwise         = error "Array length does not match matrix dimensions!"-}
+
+matIndicesValid (m,n) (i,j) = i >= 0 && i < m && j >= 0 && j < n
+    
+arrToMatIndices::(Int, Int) -> Int -> (Int, Int)
+arrToMatIndices (m,n) arrIndex = (i,j) 
+    where arrIndexFloat = fromIntegral arrIndex
+          mFloat        = fromIntegral m
+          i = arrIndex `mod` m
+          j = floor (arrIndexFloat / mFloat)
+
+matToArrIndices::(Int, Int) -> (Int, Int) -> Int
+matToArrIndices (m,n) (i,j) 
+    | matIndicesValid (m,n) (i,j) = arrIndex
+    where arrIndex = j*m + i
+    
+matGetElem (MatFromArr arr size) indices = arr !! (matToArrIndices size indices)
+               
 data Vector = Vector3 Float Float Float deriving Show
 (<+>) (Vector3 x1 y1 z1) (Vector3 x2 y2 z2) = (Vector3 (x1+x2) (y1+y2) (z1+z2))
 dot (Vector3 x1 y1 z1) (Vector3 x2 y2 z2) = x1*x2 + y1*y2 + z1*z2
